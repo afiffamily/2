@@ -15,8 +15,9 @@ async def catch_movie_post(message: types.Message):
         if match:
             kino_kodi = match.group(1)
             
-            ad_text = "\n\n🤖 Tekin AI yordamchi: <a href='https://t.me/uzchatgptaibot'>ChatGPT</a>"
+            ad_text = "\n\n🤖 Tekin AI yordamchi: <a href='https://t.me/uzchatgptaibot'>ChatGPT AI</a>"
             new_caption = (html_text or "") + ad_text
+            
             try:
                 if message.video:
                     sent_msg = await message.answer_video(video=message.video.file_id, caption=new_caption, parse_mode="HTML")
@@ -29,7 +30,7 @@ async def catch_movie_post(message: types.Message):
 
                 await add_movie(kino_kodi, sent_msg.message_id)
                 await message.delete()
-                await message.answer(f"✅ {kino_kodi}-kodli kino bazaga olindi va AI reklama qo'shildi!")
+                await message.answer(f"✅ {kino_kodi}-kodli tayyor! Baza yangilandi.")
                 
-            except Exception as e:
-                await message.answer("❌ Kinoni saqlashda xatolik yuz berdi. Bot guruhda admin ekanligiga ishonch hosil qiling.")
+            except Exception:
+                await message.answer("❌ Xatolik: Bot guruhda to'liq admin emas yoki format xato.")

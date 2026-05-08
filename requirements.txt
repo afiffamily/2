@@ -1,0 +1,7 @@
+aiogram
+sqlalchemy
+asyncpg
+pandas
+openpyxl
+python-dotenv
+aiohttp

@@ -1,19 +1,35 @@
 import re
 from aiogram import Router, types, F
 from config.config import GROUP_ID
-from database.requests import add_movie 
+from database.requests import add_movie
 
 router = Router()
 
 @router.message(F.chat.id == GROUP_ID)
 async def catch_movie_post(message: types.Message):
-    text = message.text or message.caption
+    plain_text = message.text or message.caption
+    html_text = message.html_text 
     
-    if text:
-        match = re.search(r"Kino kodi:\s*(\d+)", text, re.IGNORECASE)
+    if plain_text:
+        match = re.search(r"Kino kodi:\s*(\d+)", plain_text, re.IGNORECASE)
         if match:
             kino_kodi = match.group(1)
             
-            await add_movie(kino_kodi, message.message_id)
-            
-            await message.reply(f"✅ {kino_kodi}-kodli tayyor! Baza yangilandi.")
+            ad_text = "\n\n🤖 Tekin AI yordamchi: <a href='https://t.me/uzchatgptaibot'>ChatGPT</a>"
+            new_caption = (html_text or "") + ad_text
+            try:
+                if message.video:
+                    sent_msg = await message.answer_video(video=message.video.file_id, caption=new_caption, parse_mode="HTML")
+                elif message.document:
+                    sent_msg = await message.answer_document(document=message.document.file_id, caption=new_caption, parse_mode="HTML")
+                elif message.photo:
+                    sent_msg = await message.answer_photo(photo=message.photo[-1].file_id, caption=new_caption, parse_mode="HTML")
+                else:
+                    return 
+
+                await add_movie(kino_kodi, sent_msg.message_id)
+                await message.delete()
+                await message.answer(f"✅ {kino_kodi}-kodli kino bazaga olindi va AI reklama qo'shildi!")
+                
+            except Exception as e:
+                await message.answer("❌ Kinoni saqlashda xatolik yuz berdi. Bot guruhda admin ekanligiga ishonch hosil qiling.")

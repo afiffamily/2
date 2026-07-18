@@ -1,0 +1,25 @@
+# Muhit sozlamalari (maxfiy ma'lumotlar)
+.env
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+
+# Virtual muhit
+venv/
+.venv/
+env/
+
+# Bot log fayli
+bot.log
+*.log
+
+# Vaqtinchalik fayllar
+*.xlsx
+*.tmp
